@@ -4,8 +4,9 @@ from tasks.models import Task, Comments
 
 class IsTaskCreateAllowed(permissions.BasePermission):
   """
-  Custom permission to allow project owners and admin members to create tasks,
-  and project members with role 'member' to only view tasks.
+  - Project Owner & admin members can create tasks.
+  - Project members with role 'Member' can only view tasks.
+  - Superusers can have all access.
   """
 
   def has_permission(self, request, view):
@@ -41,7 +42,8 @@ class IsTaskCreateAllowed(permissions.BasePermission):
 
 class IsCommentPostAllowed(permissions.BasePermission):
   """
-  Custom permission to allow superusers, project owners, and project members to post comments.
+  - project owners & members can post & view comments.
+  - superusers can have all access.
   """
 
   def has_permission(self, request, view):
@@ -72,7 +74,9 @@ class IsCommentPostAllowed(permissions.BasePermission):
   
 class IsCommentOwnerOrAdmin(permissions.BasePermission):
   """
-  Custom permission to allow superusers, project owners, comment owners, and admin members to manage comments.
+  - Owner can edit or delete their comment
+  - Admin members and project owners can delete comments
+  - Superusers can have all access
   """
 
   def has_object_permission(self, request, view, obj):
