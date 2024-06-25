@@ -3,7 +3,7 @@ from rest_framework import routers
 from projects.views import ProjectViewSet, ProjectMemberViewSet
 # Create a router for ProjectViewSet
 project_router = routers.DefaultRouter()
-project_router.register(r'', ProjectViewSet, basename='project-api')
+project_router.register('', ProjectViewSet, basename='project-api')
 
 # Create a router for ProjectMemberViewSet, nested under projects
 member_router = routers.DefaultRouter()

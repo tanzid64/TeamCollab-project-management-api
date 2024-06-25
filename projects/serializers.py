@@ -9,15 +9,16 @@ class ProjectSerializer(serializers.ModelSerializer):
     model = Project
     fields = ["id", "name", "description", "owner", "created_at"]
     extra_kwargs = {
-      'id': {'read_only': True},
       'created_at': {'read_only': True},
       'owner': {'read_only': True},
     }
 
+
 class ProjectMemberSerializer(serializers.ModelSerializer):
-  user = UserDetailsSerializer(read_only=True)
-  user_id = serializers.PrimaryKeyRelatedField(queryset=User.objects.all(), required=False, write_only=True, source='user')
-  project = ProjectSerializer(read_only=True)
-  class Meta:
-    model = ProjectMember
-    fields = ["id", "role", "user", "user_id", "project"]
+    user = UserDetailsSerializer(read_only=True)
+    user_id = serializers.PrimaryKeyRelatedField(queryset=User.objects.all(), write_only=True, source='user')
+    project = ProjectSerializer(read_only=True)
+
+    class Meta:
+        model = ProjectMember
+        fields = ["id", "role", "user", "user_id", "project"]

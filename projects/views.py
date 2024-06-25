@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from rest_framework.viewsets import ModelViewSet
-from rest_framework.permissions import IsAuthenticatedOrReadOnly
+from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
 from projects.models import Project, ProjectMember
 from projects.serializers import ProjectSerializer, ProjectMemberSerializer
 from projects.permissions import IsProjectOwnerOrAdminMember, IsProjectMemberAdminOrOwner
@@ -14,7 +14,7 @@ class ProjectViewSet(ModelViewSet):
 
 class ProjectMemberViewSet(ModelViewSet):
   serializer_class = ProjectMemberSerializer
-  permission_classes = (IsAuthenticatedOrReadOnly, IsProjectMemberAdminOrOwner)
+  permission_classes = (IsAuthenticated, IsProjectMemberAdminOrOwner,)
   http_method_names = ('get', 'delete', 'patch', 'post')
   def get_queryset(self):
     return ProjectMember.objects.filter(project_id=self.kwargs['project_id'])
