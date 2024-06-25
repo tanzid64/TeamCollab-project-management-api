@@ -3,6 +3,7 @@ from rest_framework import status, generics, viewsets
 from rest_framework.response import Response
 from users.models import User
 from users.serializers import UserRegisterSerializer, UserLoginSerializer, UserDetailsSerializer
+from users.permissions import IsAdminOrIsSelf
 from rest_framework_simplejwt.tokens import RefreshToken
 
 # Simple JWT
@@ -25,11 +26,13 @@ class UserLoginView(generics.GenericAPIView):
     serializer = self.get_serializer(data=request.data)
     serializer.is_valid(raise_exception=True)
     user = serializer.validated_data['user']
-    return Response(get_tokens_for_user(user), status=status.HTTP_200_OK)
+    tokens = get_tokens_for_user(user)
+    return Response(tokens, status=status.HTTP_200_OK)
   
 # User Details, Update, Delete
 class UserViewSet(viewsets.ModelViewSet):
   queryset = User.objects.all()
   serializer_class = UserDetailsSerializer
+  permission_classes = [IsAdminOrIsSelf]
   http_method_names = ('get', 'delete', 'patch')
 
