@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from users.models import User
 
-class UserSerializer(serializers.ModelSerializer):
+class UserRegisterSerializer(serializers.ModelSerializer):
   confirm_password = serializers.CharField(style={'input_type':'password'}, write_only=True)
 
   class Meta:
