@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from users.models import User
+from django.contrib.auth import authenticate
 
 class UserRegisterSerializer(serializers.ModelSerializer):
   confirm_password = serializers.CharField(style={'input_type':'password'}, write_only=True)
@@ -20,3 +21,24 @@ class UserRegisterSerializer(serializers.ModelSerializer):
     instance.set_password(password)
     instance.save()
     return instance
+  
+class UserLoginSerializer(serializers.Serializer):
+  email = serializers.EmailField(max_length=255)
+  password = serializers.CharField(write_only=True)
+
+  class Meta:
+    model = User
+    fields = ['email', 'password']
+
+  def validate(self, data):
+    email = data.get('email')
+    password = data.get('password')
+    
+    # Using `username` field for authentication as the default User model does not have an email field for authentication
+    user = authenticate(username=email, password=password)
+    
+    if not user:
+      raise serializers.ValidationError('Incorrect Credentials')
+    
+    data['user'] = user
+    return data
