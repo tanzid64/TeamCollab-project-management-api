@@ -11,7 +11,11 @@ class Project(models.Model):
 
   def __str__(self):
     return f"{self.name} by {self.owner}"
-  
+
+ROLE_CHOICES = [
+      ('Admin', 'Admin'),
+      ('Member', 'Member'),
+    ]
 class ProjectMember(models.Model):
   project = models.ForeignKey(Project,related_name="members", on_delete=models.CASCADE)
   user = models.ForeignKey(User,related_name="projects_members", on_delete=models.CASCADE)
