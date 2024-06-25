@@ -28,17 +28,48 @@ class IsTaskCreateAllowed(permissions.BasePermission):
       return True
 
     # Allow project members with role 'Admin' to create tasks
-    if ProjectMember.objects.filter(project=project, user=request.user, role='Admin').exists():
+    if ProjectMember.objects.filter(project=project, user=request.user.id, role='Admin').exists():
       return True
 
     # Allow project members with role 'Member' to only view tasks
     if request.method in permissions.SAFE_METHODS:
-      if ProjectMember.objects.filter(project=project, user=request.user, role='Member').exists():
-        return True
+      if ProjectMember.objects.filter(project=project, user=request.user.id, role='Member').exists():
+        return True or project.owner == request.user
 
     return False
 
+class IsTaskUpdateAllowed(permissions.BasePermission):
+  """
+  - Project Owner & admin members can update tasks.
+  - Project members with role 'Member' can only view tasks.
+  - Superusers can have all access.
+  """
 
+  def has_object_permission(self, request, view, obj):
+    # Allow superusers to have all access
+    if request.user.is_superuser:
+      return True
+
+    try:
+      project = obj.project
+    except Project.DoesNotExist:
+      return False
+
+    # Allow project owners to update tasks
+    if project.owner == request.user:
+      print(project.owner)
+      return True
+
+    # Allow project members with role 'Admin' to update tasks
+    if ProjectMember.objects.filter(project=project, user=request.user.id, role='Admin').exists():
+      return True
+
+    # Allow project members with role 'Member' to only view tasks
+    if request.method in permissions.SAFE_METHODS:
+      if ProjectMember.objects.filter(project=project, user=request.user.id, role='Member').exists():
+        return True or project.owner == request.user
+
+    return False
 
 class IsCommentPostAllowed(permissions.BasePermission):
   """

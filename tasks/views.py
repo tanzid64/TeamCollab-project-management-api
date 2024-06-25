@@ -1,7 +1,7 @@
 from rest_framework import generics, permissions
 from tasks.models import Task, Comments
 from tasks.serializers import TaskSerializer, CommentSerializer
-from tasks.permissions import IsTaskCreateAllowed, IsCommentPostAllowed, IsCommentOwnerOrAdmin
+from tasks.permissions import IsTaskCreateAllowed, IsCommentPostAllowed, IsCommentOwnerOrAdmin,IsTaskUpdateAllowed
 
 class TaskListCreateView(generics.ListCreateAPIView):
   serializer_class = TaskSerializer
@@ -17,7 +17,7 @@ class TaskListCreateView(generics.ListCreateAPIView):
 class TaskDetailView(generics.RetrieveUpdateDestroyAPIView):
   queryset = Task.objects.all()
   serializer_class = TaskSerializer
-  permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsTaskCreateAllowed]
+  permission_classes = [ IsTaskUpdateAllowed,]
 
 class CommentListCreateView(generics.ListCreateAPIView):
   serializer_class = CommentSerializer
