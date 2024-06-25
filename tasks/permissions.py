@@ -98,7 +98,7 @@ class IsCommentPostAllowed(permissions.BasePermission):
       return True
 
     # Allow project members to post comments
-    if ProjectMember.objects.filter(project=project, user=request.user).exists():
+    if ProjectMember.objects.filter(project=project, user=request.user.id).exists():
       return True
 
     return False
@@ -122,7 +122,7 @@ class IsCommentOwnerOrAdmin(permissions.BasePermission):
 
       # Allow project members to view comments
       if request.method in permissions.SAFE_METHODS:
-        return ProjectMember.objects.filter(project=project, user=request.user).exists()
+        return ProjectMember.objects.filter(project=project, user=request.user.id).exists()
 
       # Allow comment owner to edit or delete their comment
       if obj.user == request.user:
@@ -132,7 +132,7 @@ class IsCommentOwnerOrAdmin(permissions.BasePermission):
       if request.method == 'DELETE':
         if project.owner == request.user:
           return True
-        if ProjectMember.objects.filter(project=project, user=request.user, role='Admin').exists():
+        if ProjectMember.objects.filter(project=project, user=request.user.id, role='Admin').exists():
           return True
 
     return False
